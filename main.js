@@ -1,136 +1,134 @@
 
 var canvas;
 var gl;
+var program;
 
-var NumVertices  = 36;
-
-var points = [];
-var colors = [];
-
-var xAxis = 0;
-var yAxis = 1;
-var zAxis = 2;
-
-var axis = 0;
-var theta = [ 0, 0, 0 ];
-
-var thetaLoc;
+var cubesToRender = [];
+var camera;
+var light;
 
 window.onload = function init()
-{
-    canvas = document.getElementById( "gl-canvas" );
-    
-    gl = WebGLUtils.setupWebGL( canvas );
-    if ( !gl ) { alert( "WebGL isn't available" ); }
+{   
+	initWebGL()
+	//original cam position: vec3(4, 3.5, 4)
+	camera = new Camera(program, vec3(4, 3.5, 4), vec3(0, 0, 0), vec3(0, 1, 0))
+    light = new Light(program, vec4(1, 4.5, 1, 1))
+	
+	cubesToRender = cubesToRender.concat(createRubicSlice(vec4(0.0, 0.0, 0.0, 1.0)))
+	cubesToRender = cubesToRender.concat(createRubicSlice(vec4(1.0, 0.0, 0.0, 1.0)))
+	cubesToRender = cubesToRender.concat(createRubicSlice(vec4(2.0, 0.0, 0.0, 1.0)))
+	
+	// cubesToRender[8].translateBy(0, 1, 0)
+	
+	// camera.translateBy(-1, -2.5, -1)
 
-    colorCube();
-
-    gl.viewport( 0, 0, canvas.width, canvas.height );
-    gl.clearColor( 1.0, 1.0, 1.0, 1.0 );
-    
-    gl.enable(gl.DEPTH_TEST);
-
-    //
-    //  Load shaders and initialize attribute buffers
-    //
-    var program = initShaders( gl, "vertex-shader", "fragment-shader" );
-    gl.useProgram( program );
-    
-    var cBuffer = gl.createBuffer();
-    gl.bindBuffer( gl.ARRAY_BUFFER, cBuffer );
-    gl.bufferData( gl.ARRAY_BUFFER, flatten(colors), gl.STATIC_DRAW );
-
-    var vColor = gl.getAttribLocation( program, "vColor" );
-    gl.vertexAttribPointer( vColor, 4, gl.FLOAT, false, 0, 0 );
-    gl.enableVertexAttribArray( vColor );
-
-    var vBuffer = gl.createBuffer();
-    gl.bindBuffer( gl.ARRAY_BUFFER, vBuffer );
-    gl.bufferData( gl.ARRAY_BUFFER, flatten(points), gl.STATIC_DRAW );
-    
-
-    var vPosition = gl.getAttribLocation( program, "vPosition" );
-    gl.vertexAttribPointer( vPosition, 4, gl.FLOAT, false, 0, 0 );
-    gl.enableVertexAttribArray( vPosition );
-
-    thetaLoc = gl.getUniformLocation(program, "theta"); 
-    
-    //event listeners for buttons
-    
-    document.getElementById( "xButton" ).onclick = function () {
-        axis = xAxis;
-    };
-    document.getElementById( "yButton" ).onclick = function () {
-        axis = yAxis;
-    };
-    document.getElementById( "zButton" ).onclick = function () {
-        axis = zAxis;
-    };
-        
-    render();
-}
-
-function colorCube()
-{
-    quad( 1, 0, 3, 2 );
-    quad( 2, 3, 7, 6 );
-    quad( 3, 0, 4, 7 );
-    quad( 6, 5, 1, 2 );
-    quad( 4, 5, 6, 7 );
-    quad( 5, 4, 0, 1 );
-}
-
-function quad(a, b, c, d) 
-{
-    var vertices = [
-        vec4( -0.5, -0.5,  0.5, 1.0 ),
-        vec4( -0.5,  0.5,  0.5, 1.0 ),
-        vec4(  0.5,  0.5,  0.5, 1.0 ),
-        vec4(  0.5, -0.5,  0.5, 1.0 ),
-        vec4( -0.5, -0.5, -0.5, 1.0 ),
-        vec4( -0.5,  0.5, -0.5, 1.0 ),
-        vec4(  0.5,  0.5, -0.5, 1.0 ),
-        vec4(  0.5, -0.5, -0.5, 1.0 )
-    ];
-
-    var vertexColors = [
-        [ 0.0, 0.0, 0.0, 1.0 ],  // black
-        [ 1.0, 0.0, 0.0, 1.0 ],  // red
-        [ 1.0, 1.0, 0.0, 1.0 ],  // yellow
-        [ 0.0, 1.0, 0.0, 1.0 ],  // green
-        [ 0.0, 0.0, 1.0, 1.0 ],  // blue
-        [ 1.0, 0.0, 1.0, 1.0 ],  // magenta
-        [ 0.0, 1.0, 1.0, 1.0 ],  // cyan
-        [ 1.0, 1.0, 1.0, 1.0 ]   // white
-    ];
-
-    // We need to parition the quad into two triangles in order for
-    // WebGL to be able to render it.  In this case, we create two
-    // triangles from the quad indices
-    
-    //vertex color assigned by the index of the vertex
-    
-    var indices = [ a, b, c, a, c, d ];
-
-    for ( var i = 0; i < indices.length; ++i ) {
-        points.push( vertices[indices[i]] );
-        //colors.push( vertexColors[indices[i]] );
-    
-        // for solid colored faces use 
-        colors.push(vertexColors[a]);
-        
-    }
+	
+	document.addEventListener("keydown", function(event)
+	{
+		didPressKey(event.key)
+	});
+	
+	// canvas.addEventListener("mousemove", function(event)
+	// {
+	// 	var x = 2 * event.clientX/canvas.width-1;
+	// 	var y = 2 * (canvas.height-event.clientY)/canvas.height-1;
+				
+	// 	mouseDidMove(x, y);
+	// });
+	
+	render()
 }
 
 function render()
 {
-    gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-    theta[axis] += 2.0;
-    gl.uniform3fv(thetaLoc, theta);
-
-    gl.drawArrays( gl.TRIANGLES, 0, NumVertices );
-
-    requestAnimFrame( render );
+	gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+	
+	camera.render()
+	light.render()
+	
+	cubesToRender.forEach(element => element.render());
+	
+	requestAnimFrame( render );
 }
 
+/**
+ * Creates a single slice (9 cubes) at the given position.
+ * This method is created with the idea that a Rubic's Cube consists of 3 slices.
+ * Therefore, this function should be called thrice to get a rubic's cube.
+ * @param position - vec4
+ */
+function createRubicSlice(position)
+{
+	cubes = []
+	
+	x = position[0]
+	y = position[1]
+	z = position[2]
+	alpha = position[3]
+	
+	for (i = 0; i < 3; i++) 
+	{
+		for (j = 0; j < 3; j++)
+		{
+			cubePosition = vec4(x, y + j, z + i, alpha)
+						
+			cube = new Cube(program, cubePosition, 1)
+			cube.init()
+			cubes.push(cube)
+		}
+	}
+	
+	return cubes
+}
+
+function didPressKey(key)
+{
+	console.log("Key pressed: " + key)
+	
+	cameraDirection = normalize(subtract(camera.target, camera.position))
+	// vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection));
+	cameraRightDirection = normalize(cross(camera.up, cameraDirection))
+	
+	switch(key) {
+		case "=":
+			camera.translateBy(cameraDirection)
+			break;
+		case "-":
+			camera.translateBy(negate(cameraDirection))
+			  break;
+		case "ArrowRight":
+			camera.translateBy(cameraRightDirection)
+		  	break;
+		default:
+		  	// code block
+	  }
+	
+
+}
+
+function mouseDidMove(x, y)
+{
+	// console.log([x, y])
+}
+
+/**
+ * All the boilerplate code for setting up the WebGL lies here.
+ */
+function initWebGL()
+{
+	canvas = document.getElementById( "gl-canvas" );
+		
+	gl = WebGLUtils.setupWebGL( canvas );
+	if ( !gl ) { alert( "WebGL isn't available" ); }
+
+	gl.viewport( 0, 0, canvas.width, canvas.height );
+	gl.clearColor( 0.1, 0.1, 0.1, 1.0 );
+
+	gl.enable(gl.DEPTH_TEST);
+
+	//
+	//  Load shaders and initialize attribute buffers
+	//
+	program = initShaders( gl, "vertex-shader", "fragment-shader" );
+	gl.useProgram( program );
+}
