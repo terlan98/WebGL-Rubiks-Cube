@@ -31,7 +31,65 @@ class Camera {
 	translateBy(x, y, z) 
 	{
 		this.position = vec3(mult_v(translate(x, y, z), vec4(this.position)));
-	}
+    }
+    
+    moveForward()
+    {
+        var cameraDirection = normalize(subtract(this.target, this.position))
+        this.translateBy(cameraDirection)
+        this.target = add(this.position, cameraDirection)
+    }
+    
+    moveBackward()
+    {
+        var negativeCameraDirection = normalize(subtract(this.position, this.target))
+        this.translateBy(negativeCameraDirection)
+        this.target = add(this.position, negate(negativeCameraDirection))
+    }
+    
+    moveRight()
+    {
+        var cameraDirection = normalize(subtract(this.target, this.position))
+        var cameraRight = normalize(cross(cameraDirection, this.up))
+        
+        this.translateBy(cameraRight)
+        this.target = add(this.position, cameraDirection)
+    }
+    
+    moveLeft()
+    {
+        var cameraDirection = normalize(subtract(this.target, this.position))
+        var cameraLeft = normalize(cross(this.up, cameraDirection))
+        
+        this.translateBy(cameraLeft)
+        this.target = add(this.position, cameraDirection)
+    }
+    
+    moveUp()
+    {
+        var cameraDirection = this.getCameraDirectionVector()
+        
+        this.translateBy(this.up)
+        this.target = add(this.position, cameraDirection)
+    }
+    
+    moveDown()
+    {
+        var negativeCameraDirection = this.getNegativeCameraDirectionVector()
+        
+        this.translateBy(negate(this.up))
+        this.target = subtract(this.position, negativeCameraDirection)
+    }
+    
+    getCameraDirectionVector()
+    {
+        return normalize(subtract(this.target, this.position))
+    }
+    
+    getNegativeCameraDirectionVector()
+    {
+        return normalize(subtract(this.position, this.target))
+    }
 }
 
 //TODO: Make a new common js file for such functions, which may be needed by more classes

@@ -25,6 +25,11 @@ window.onload = function init()
 	
 	document.addEventListener("keydown", function(event)
 	{
+		// Prevent arrow keys from scrolling
+		if(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(event.key) > -1) {
+			event.preventDefault();
+		}
+	
 		didPressKey(event.key)
 	});
 	
@@ -85,22 +90,30 @@ function didPressKey(key)
 {
 	console.log("Key pressed: " + key)
 	
-	cameraDirection = normalize(subtract(camera.target, camera.position))
-	// vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection));
-	cameraRightDirection = normalize(cross(camera.up, cameraDirection))
+	// cameraDirection = normalize(subtract(camera.target, camera.position))
+	
+	
+	// cameraRightDirection = normalize(cross(camera.up, cameraDirection))
 	
 	switch(key) {
-		case "=":
-			camera.translateBy(cameraDirection)
+		case "w":
+			camera.moveForward()
 			break;
-		case "-":
-			camera.translateBy(negate(cameraDirection))
-			  break;
-		case "ArrowRight":
-			camera.translateBy(cameraRightDirection)
-		  	break;
-		default:
-		  	// code block
+		case "s":
+			camera.moveBackward()
+			break;
+		case "a":
+			camera.moveLeft()
+			break;
+		case "d":
+			camera.moveRight()
+			break;
+		case "ArrowUp":
+			camera.moveUp()
+			break
+		case "ArrowDown":
+			camera.moveDown()
+			break
 	  }
 	
 
