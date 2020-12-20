@@ -7,10 +7,20 @@ var cubesToRender = [];
 var camera;
 var light;
 
+var lastX
+var lastY
+
+var firstMouse = true
+
 window.onload = function init()
 {   
 	initWebGL()
+	
+	lastX = canvas.width / 2
+	lastY = canvas.height / 2
+	
 	//original cam position: vec3(4, 3.5, 4)
+	// camera = new Camera(program, vec3(0, 0, 6), vec3(0, 0, 0), vec3(0, 1, 0))
 	camera = new Camera(program, vec3(4, 3.5, 4), vec3(0, 0, 0), vec3(0, 1, 0))
     light = new Light(program, vec4(1, 4.5, 1, 1))
 	
@@ -33,13 +43,14 @@ window.onload = function init()
 		didPressKey(event.key)
 	});
 	
-	// canvas.addEventListener("mousemove", function(event)
-	// {
-	// 	var x = 2 * event.clientX/canvas.width-1;
-	// 	var y = 2 * (canvas.height-event.clientY)/canvas.height-1;
-				
-	// 	mouseDidMove(x, y);
-	// });
+	canvas.addEventListener("mousemove", function(event)
+	{
+		// var x = 2 * event.clientX / canvas.width-1;
+		// var y = 2 * (canvas.height - event.clientY) / canvas.height-1;
+		
+		// mouseDidMove(x, y);
+		mouseDidMove(event.clientX, event.clientY)
+	});
 	
 	render()
 }
@@ -122,6 +133,20 @@ function didPressKey(key)
 function mouseDidMove(x, y)
 {
 	// console.log([x, y])
+	
+	if (firstMouse)
+    {
+        lastX = x;
+        lastY = y;
+        firstMouse = false;
+    }
+	
+	var xOffset = x - lastX;
+	var yOffset = lastY - y;
+	lastX = x;
+	lastY = y;
+	
+	camera.rotate(xOffset, yOffset)
 }
 
 /**
@@ -138,7 +163,9 @@ function initWebGL()
 	gl.clearColor( 0.1, 0.1, 0.1, 1.0 );
 
 	gl.enable(gl.DEPTH_TEST);
-
+	// canvas.style.cursor = 'none';
+	
+	
 	//
 	//  Load shaders and initialize attribute buffers
 	//

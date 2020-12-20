@@ -1,12 +1,21 @@
 class Camera {	
+    SENSITIVITY = 0.3
+    SPEED = 0.08
+    
+    yaw = -134.0
+    pitch = -27.0
+    
     constructor(program, position, target, up) {
         this.program = program;
         this.position = position;
         this.target = target;
         this.up = up;
+        this.front = normalize(subtract(this.target, this.position))
     }
 
     render() {
+        this.front = normalize(subtract(this.target, this.position))
+        
         var pos = gl.getUniformLocation(this.program, "v_Camera");
         gl.uniform4fv(pos, flatten(vec4(this.position, 1.0)));
 
@@ -18,11 +27,33 @@ class Camera {
         var matProj = perspective(90, 1.0, 0.0001, 1000);
 		gl.uniformMatrix4fv(proj, false, flatten(matProj));
     }
+    
+    rotate(xOffset, yOffset)
+    {
+	    xOffset *= this.SENSITIVITY;
+        yOffset *= this.SENSITIVITY;
+        
+        this.yaw += xOffset
+        this.pitch += yOffset
+        
+        if(this.pitch > 89.0) this.pitch = 89.0
+        if(this.pitch < -89.0) this.pitch = -89.0
+        
+        // console.log(this.pitch, this.yaw)
+        
+        var directionX = Math.cos(radians(this.yaw)) * Math.cos(radians(this.pitch))
+        var directionY = Math.sin(radians(this.pitch));
+        var directionZ = Math.sin(radians(this.yaw)) * Math.cos(radians(this.pitch))
+        var direction = vec3(directionX, directionY, directionZ)
+        
+        this.target = add(this.position, normalize(direction))
+        // console.log(this.front)
+    }
 
-	rotate(angle) 
-	{
-        this.position = vec3(mult_v(rotate(angle, vec3(0, 1, 0)), vec4(this.position)));
-	}
+	// rotate(angle) 
+	// {
+    //     this.position = vec3(mult_v(rotate(angle, vec3(0, 1, 0)), vec4(this.position)));
+	// }
 	
 	/**
 	 * 
@@ -35,60 +66,47 @@ class Camera {
     
     moveForward()
     {
-        var cameraDirection = normalize(subtract(this.target, this.position))
-        this.translateBy(cameraDirection)
-        this.target = add(this.position, cameraDirection)
+        // this.translateBy(this.front)
+        // this.target = add(this.position, this.front)
+        
+        var delta = scale(this.SPEED, this.front)        
+        this.translateBy(delta)
+        this.target = add(this.position, delta)
     }
     
     moveBackward()
     {
-        var negativeCameraDirection = normalize(subtract(this.position, this.target))
-        this.translateBy(negativeCameraDirection)
-        this.target = add(this.position, negate(negativeCameraDirection))
+        var delta = scale(this.SPEED, this.front) 
+        this.translateBy(negate(delta))
+        this.target = add(this.position, delta)
     }
     
     moveRight()
     {
-        var cameraDirection = normalize(subtract(this.target, this.position))
-        var cameraRight = normalize(cross(cameraDirection, this.up))
+        var cameraRight = normalize(cross(this.front, this.up))
         
-        this.translateBy(cameraRight)
-        this.target = add(this.position, cameraDirection)
+        this.translateBy(scale(this.SPEED, cameraRight))
+        this.target = add(this.position, scale(this.SPEED, this.front))
     }
     
     moveLeft()
     {
-        var cameraDirection = normalize(subtract(this.target, this.position))
-        var cameraLeft = normalize(cross(this.up, cameraDirection))
+        var cameraLeft = normalize(cross(this.up, this.front))
         
-        this.translateBy(cameraLeft)
-        this.target = add(this.position, cameraDirection)
+        this.translateBy(scale(this.SPEED, cameraLeft))
+        this.target = add(this.position, scale(this.SPEED, this.front))
     }
     
     moveUp()
-    {
-        var cameraDirection = this.getCameraDirectionVector()
-        
-        this.translateBy(this.up)
-        this.target = add(this.position, cameraDirection)
+    {    
+        this.translateBy(scale(this.SPEED, this.up))
+        this.target = add(this.position, scale(this.SPEED, this.front))
     }
     
     moveDown()
-    {
-        var negativeCameraDirection = this.getNegativeCameraDirectionVector()
-        
-        this.translateBy(negate(this.up))
-        this.target = subtract(this.position, negativeCameraDirection)
-    }
-    
-    getCameraDirectionVector()
-    {
-        return normalize(subtract(this.target, this.position))
-    }
-    
-    getNegativeCameraDirectionVector()
-    {
-        return normalize(subtract(this.position, this.target))
+    {        
+        this.translateBy(negate(scale(this.SPEED, this.up)))
+        this.target = subtract(this.position, negate(scale(this.SPEED, this.front)))
     }
 }
 
