@@ -3,7 +3,6 @@ var canvas;
 var gl;
 var program;
 
-var cubesToRender = [];
 var camera;
 var light;
 
@@ -24,15 +23,10 @@ window.onload = function init()
 	camera = new Camera(program, vec3(4, 3.5, 4), vec3(0, 0, 0), vec3(0, 1, 0))
     light = new Light(program, vec4(1, 4.5, 1, 1))
 	
-	cubesToRender = cubesToRender.concat(createRubicSlice(vec4(0.0, 0.0, 0.0, 1.0)))
-	cubesToRender = cubesToRender.concat(createRubicSlice(vec4(1.0, 0.0, 0.0, 1.0)))
-	cubesToRender = cubesToRender.concat(createRubicSlice(vec4(2.0, 0.0, 0.0, 1.0)))
-	
-	// cubesToRender[8].translateBy(0, 1, 0)
-	
-	// camera.translateBy(-1, -2.5, -1)
+	rubic = new Rubic(program)
+		
+	camera.translateBy(-1, -1, -1)
 
-	
 	document.addEventListener("keydown", function(event)
 	{
 		// Prevent arrow keys from scrolling
@@ -61,40 +55,9 @@ function render()
 	
 	camera.render()
 	light.render()
-	
-	cubesToRender.forEach(element => element.render());
+	rubic.render()
 	
 	requestAnimFrame( render );
-}
-
-/**
- * Creates a single slice (9 cubes) at the given position.
- * This method is created with the idea that a Rubic's Cube consists of 3 slices.
- * Therefore, this function should be called thrice to get a rubic's cube.
- * @param position - vec4
- */
-function createRubicSlice(position)
-{
-	cubes = []
-	
-	x = position[0]
-	y = position[1]
-	z = position[2]
-	alpha = position[3]
-	
-	for (i = 0; i < 3; i++) 
-	{
-		for (j = 0; j < 3; j++)
-		{
-			cubePosition = vec4(x, y + j, z + i, alpha)
-						
-			cube = new Cube(program, cubePosition, 1)
-			cube.init()
-			cubes.push(cube)
-		}
-	}
-	
-	return cubes
 }
 
 function didPressKey(key)
@@ -133,6 +96,7 @@ function didPressKey(key)
 function mouseDidMove(x, y)
 {
 	// console.log([x, y])
+	return
 	
 	if (firstMouse)
     {

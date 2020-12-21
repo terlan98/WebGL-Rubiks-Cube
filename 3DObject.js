@@ -90,4 +90,8 @@ class _3DObject {
 	rotate(angle) {
 		this.matModel = mult(rotate(angle, vec3(0, 1, 0)), this.matModel);
 	}
+	
+	rotate(angle, axis) {
+		this.matModel = mult(rotate(angle, axis), this.matModel);
+	}
 }

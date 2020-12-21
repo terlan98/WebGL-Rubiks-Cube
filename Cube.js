@@ -1,8 +1,9 @@
 class Cube extends _3DObject {
-	constructor(program, position, size = 1) {
+	constructor(program, id, position, size = 1) {
 		super(program, position);
 		this.position = position;
 		this.size = size;
+		this.id = id
 		
 		this.material.ambient = vec3(Math.random(), Math.random(), Math.random())
 	}
