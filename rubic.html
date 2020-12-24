@@ -21,7 +21,7 @@
 		mat4 m_ModelView = m_View * m_Model;
 		vec4 tmp_Pos = m_ModelView * v_Pos;
 	
-		o_Norm = normalize(m_ModelView * v_Norm).xyz;
+		o_Norm = normalize(m_View * v_Norm).xyz;
 		o_Light = (m_View * v_Light).xyz;
 		o_Camera = normalize(-tmp_Pos).xyz;
 		

@@ -19,10 +19,10 @@ class _3DObject {
 		this.position = position;
 		this.matModel = mat4();
 		this.material = {
-			ambient: vec3(0.2, 0.3, 0.4),
-			diffuse: vec3(0.1, 0.3, 0.2),
-			specular: vec3(0.0, 0.0, 0.0),
-			shininess: 250.0
+			ambient: vec3(0.9, 0.0, 0.0),
+			diffuse: vec3(0.4, 0.4, 0.4),
+			specular: vec3(0.35, 0.35, 0.35),
+			shininess: 50.0
 		}
 	}
 
