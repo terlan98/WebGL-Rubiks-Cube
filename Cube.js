@@ -19,6 +19,13 @@ class Cube extends _3DObject {
 		// this.material.ambient = vec3(Math.random(), Math.random(), Math.random())
 	}
 
+	/**
+	 * Generates vertices and normals for a single face of cube.
+	 * @param {number} a index of vertex 1
+	 * @param {number} b index of vertex 2
+	 * @param {number} c index of vertex 3
+	 * @param {number} d index of vertex 4
+	 */
 	quad(a, b, c, d) 
 	{
 		var t1 = subtract(this.initVertices[b], this.initVertices[a]);

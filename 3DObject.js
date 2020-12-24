@@ -42,9 +42,7 @@ class _3DObject {
 		this.bufNormal = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.bufNormal);
 		gl.bufferData(gl.ARRAY_BUFFER, flatten(this.normals), gl.STATIC_DRAW);
-	}
-
-	render() {
+		
 		// sending material properties
 		var ambient = gl.getUniformLocation(this.program, "col_Ambient");
 		gl.uniform3fv(ambient, flatten(this.material.ambient));
@@ -57,7 +55,9 @@ class _3DObject {
 
 		var shininess = gl.getUniformLocation(this.program, "col_Shininess");
 		gl.uniform1f(shininess, this.material.shininess);
+	}
 
+	render() {
 		var model = gl.getUniformLocation(this.program, "m_Model");
 		gl.uniformMatrix4fv(model, false, flatten(this.matModel));
 
