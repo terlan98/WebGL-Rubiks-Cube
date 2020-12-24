@@ -21,7 +21,7 @@ window.onload = function init()
 	//original cam position: vec3(4, 3.5, 4)
 	// camera = new Camera(program, vec3(0, 0, 6), vec3(0, 0, 0), vec3(0, 1, 0))
 	camera = new Camera(program, vec3(4, 3.5, 4), vec3(0, 0, 0), vec3(0, 1, 0))
-    light = new Light(program, vec4(1, 4.5, 1, 1))
+    light = new Light(program, vec4(2, 3, 1, 1))
 	
 	rubic = new Rubic(program)
 		
@@ -56,6 +56,8 @@ function render()
 	camera.render()
 	light.render()
 	rubic.render()
+	
+	// light.rotate(1)
 	
 	requestAnimFrame( render );
 }

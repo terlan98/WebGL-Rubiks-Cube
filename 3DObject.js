@@ -14,15 +14,14 @@ class _3DObject {
 		this.bufIndex = 0;
 		this.bufNormal = 0;
 		this.vertices = [];
-		this.indices = [];
 		this.normals = [];
 		this.position = position;
 		this.matModel = mat4();
 		this.material = {
 			ambient: vec3(0.9, 0.0, 0.0),
-			diffuse: vec3(0.4, 0.4, 0.4),
-			specular: vec3(0.35, 0.35, 0.35),
-			shininess: 50.0
+			diffuse: vec3(0.6, 0.6, 0.6),
+			specular: vec3(0.6, 0.6, 0.6),
+			shininess: 100.0
 		}
 	}
 
@@ -43,11 +42,6 @@ class _3DObject {
 		this.bufNormal = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.bufNormal);
 		gl.bufferData(gl.ARRAY_BUFFER, flatten(this.normals), gl.STATIC_DRAW);
-
-		// creating buffer for element indices
-		this.bufIndex = gl.createBuffer();
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufIndex);
-		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.indices), gl.STATIC_DRAW);
 	}
 
 	render() {
@@ -67,20 +61,22 @@ class _3DObject {
 		var model = gl.getUniformLocation(this.program, "m_Model");
 		gl.uniformMatrix4fv(model, false, flatten(this.matModel));
 
+		
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.bufVertex);
 
 		var pos = gl.getAttribLocation(this.program, "v_Pos");
 		gl.vertexAttribPointer(pos, 4, gl.FLOAT, false, 0, 0);
 		gl.enableVertexAttribArray(pos);
 
+		
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.bufNormal);
 
 		var norm = gl.getAttribLocation(this.program, "v_Norm");
 		gl.vertexAttribPointer(norm, 4, gl.FLOAT, false, 0, 0);
 		gl.enableVertexAttribArray(norm);
 
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufIndex);
-		gl.drawElements(gl.TRIANGLES, this.indices.length, gl.UNSIGNED_SHORT, 0)
+
+		gl.drawArrays( gl.TRIANGLES, 0, this.vertices.length )
 	}
 
 	translateBy(x, y, z) {
