@@ -33,14 +33,18 @@ class Rubic {
 		this.cubes = this.cubes.concat(this.createRubicSlice(vec4(-1.5, -1.5, -1.5, 1.0), 0))
 		this.cubes = this.cubes.concat(this.createRubicSlice(vec4(-0.5, -1.5, -1.5, 1.0), 9))
 		this.cubes = this.cubes.concat(this.createRubicSlice(vec4(0.5, -1.5, -1.5, 1.0), 18))
-		// console.log(this.cubes[0].position, this.cubes[0].matModel)
-		// this.remainingRotationDegrees = 90
-		this.rotationQueue = [new Rotation(this, RotationSlice.VERTICAL1, 90),
-								new Rotation(this, RotationSlice.HORIZONTAL2, 90)]
+		
+		
+		this.rotationQueue = [new Rotation(this, RotationSlice.HORIZONTAL1, 90),
+								new Rotation(this, RotationSlice.VERTICAL1, 90)]
+		
+		this.rubicArray = [ [ [ 8, 17, 26 ], [ 5, 14, 23 ], [ 2, 11, 20 ] ],
+							[ [ 7, 16, 25 ], [ 4, 13, 22 ], [ 1, 10, 19 ] ],
+							[ [ 6, 15, 24 ], [ 3, 12, 21 ], [ 0, 9, 18 ] ] ]
 		
 		this.h = [[], [], []]
 		this.v = [[], [], []]
-		
+		console.log(this.rubicArray)
 		this.updateSlices()
 		
 		// this.v3.forEach(cube => console.log(cube.id))
@@ -65,8 +69,8 @@ class Rubic {
 			}
 			else
 			{
-				this.rotationQueue.pop()
-				this.updateSlices()
+				let lastRotation = this.rotationQueue.pop()
+				this.updateSlices(lastRotation)
 			}
 		}
 		else
@@ -109,11 +113,10 @@ class Rubic {
 		}
 		
 		
-		v.forEach(cube => {
-			let i = cube.id
-			this.cubes[i].translateBy(0.5, 0.5, 0)
-			this.cubes[i].rotate(this.ROTATION_SPEED, vec3(0, 0, 1))
-			this.cubes[i].translateBy(-0.5, -0.5, 0)
+		v.forEach(id => {
+			this.cubes[id].translateBy(0.5, 0.5, 0)
+			this.cubes[id].rotate(this.ROTATION_SPEED, vec3(0, 0, 1))
+			this.cubes[id].translateBy(-0.5, -0.5, 0)
 		})	
 	}
 	
@@ -142,63 +145,96 @@ class Rubic {
 				h = this.h[2]
 				break
 		}
-
 		
-		h.forEach(cube => {
-			let i = cube.id
-			this.cubes[i].translateBy(0.5, 0, 0.5)
-			this.cubes[i].rotate(this.ROTATION_SPEED, vec3(0, 1, 0))
-			this.cubes[i].translateBy(-0.5, 0, -0.5)
+		// console.log("Received H:", h)
+
+		h.forEach(id => {
+			this.cubes[id].translateBy(0.5, 0, 0.5)
+			this.cubes[id].rotate(this.ROTATION_SPEED, vec3(0, 1, 0))
+			this.cubes[id].translateBy(-0.5, 0, -0.5)
 		})
 	}
 	
 	/**
 	 * Cleans and repopulates the H and V slice arrays using position-based calculations
 	 */
-	updateSlices()
+	updateSlices(rotation)
 	{
 		var yDict = {}
 		var zDict = {}
 		
 		this.h = [[], [], []]
 		this.v = [[], [], []]
+
 		
-		this.cubes.forEach(cube => {			
-			var currentPos = mult_v(cube.matModel, cube.position)
+		var newRubic = JSON.parse(JSON.stringify(this.rubicArray)); // deep copying rubic array
+		
+		if (rotation != undefined) // false during initial setup
+		{
 			
-			// var currentPos = cube.position
-			var currentY = currentPos[1]
-			var currentZ = currentPos[2]
-			// console.log(cube.id, currentY)
+			let rotSlice = rotation.slice
 			
-			currentY = Number(currentY.toFixed(4)); // rounding
-			currentZ = Number(currentZ.toFixed(4)); // rounding
-			
-			
-			if (yDict[currentY] == undefined)
+			switch(rotSlice)
 			{
-				yDict[currentY] = new Array()
-			}
-			if (zDict[currentZ] == undefined)
-			{
-				zDict[currentZ] = new Array()
+				case RotationSlice.VERTICAL1:
+					newRubic[2][2][0] = this.rubicArray[0][2][0]				
+					newRubic[2][2][1] = this.rubicArray[1][2][0]
+					newRubic[2][2][2] = this.rubicArray[2][2][0]
+					
+					newRubic[1][2][0] = this.rubicArray[0][2][1]
+					newRubic[1][2][1] = this.rubicArray[1][2][1]
+					newRubic[1][2][2] = this.rubicArray[2][2][1]
+					
+					newRubic[0][2][0] = this.rubicArray[0][2][2]
+					newRubic[0][2][1] = this.rubicArray[1][2][2]
+					newRubic[0][2][2] = this.rubicArray[2][2][2]
+					break
+				
+				case RotationSlice.VERTICAL2:
+					newRubic[0][1][0] = this.rubicArray[0][1][2]				
+					newRubic[0][1][1] = this.rubicArray[1][1][2]
+					newRubic[0][1][2] = this.rubicArray[2][1][2]
+					
+					newRubic[1][1][0] = this.rubicArray[0][1][1]
+					newRubic[1][1][1] = this.rubicArray[1][1][1]
+					newRubic[1][1][2] = this.rubicArray[2][1][1]
+					
+					newRubic[2][1][0] = this.rubicArray[0][1][0]
+					newRubic[2][1][1] = this.rubicArray[1][1][0]
+					newRubic[2][1][2] = this.rubicArray[2][1][0]
+					
+					break
 			}
 			
-			yDict[currentY].push(cube)
-			zDict[currentZ].push(cube)
-		})
+			console.log("newRubic:",newRubic)
+			this.rubicArray = newRubic
+		}
 		
-		var i = 0
-		Object.keys(yDict).sort((a, b) => a - b).forEach(key => {
-			this.h[i] = yDict[key]
-			i++
-		})
+		this.h[0] = this.h[0].concat(this.rubicArray[2][2])
+		this.h[0] = this.h[0].concat(this.rubicArray[2][1])
+		this.h[0] = this.h[0].concat(this.rubicArray[2][0])
 		
-		i = 0
-		Object.keys(zDict).sort((a, b) => a - b).forEach(key => {
-			this.v[i] = zDict[key]
-			i++
-		})
+		this.h[1] = this.h[1].concat(this.rubicArray[1][2])
+		this.h[1] = this.h[1].concat(this.rubicArray[1][1])
+		this.h[1] = this.h[1].concat(this.rubicArray[1][0])
+		
+		this.h[2] = this.h[2].concat(this.rubicArray[0][2])
+		this.h[2] = this.h[2].concat(this.rubicArray[0][1])
+		this.h[2] = this.h[2].concat(this.rubicArray[0][0])
+		
+		this.v[0] = this.v[0].concat(this.rubicArray[2][2])
+		this.v[0] = this.v[0].concat(this.rubicArray[1][2])
+		this.v[0] = this.v[0].concat(this.rubicArray[0][2])
+		
+		this.v[1] = this.v[1].concat(this.rubicArray[2][1])
+		this.v[1] = this.v[1].concat(this.rubicArray[1][1])
+		this.v[1] = this.v[1].concat(this.rubicArray[0][1])
+		
+		this.v[2] = this.v[2].concat(this.rubicArray[2][0])
+		this.v[2] = this.v[2].concat(this.rubicArray[1][0])
+		this.v[2] = this.v[2].concat(this.rubicArray[0][0])
+		
+		console.log("H:", this.h)
 	}
 	
 	
@@ -261,6 +297,7 @@ class Rotation
 		this.rubic = rubic
 		this.slice = slice
 		this.degrees = degrees
+		this.isNegative = degrees < 0
 	}
 	
 	/**
