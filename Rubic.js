@@ -19,29 +19,27 @@ class Rubic {
 	{
 		this.ROTATION_SPEED = 2
 	
-		this.H3_Y_COORDINATE =  0.5
-		this.H2_Y_COORDINATE = -0.5
-		this.H1_Y_COORDINATE = -1.5
+		this.H3_Y_COORDINATE =  1
+		this.H2_Y_COORDINATE = -1
+		this.H1_Y_COORDINATE = -3
 		
-		this.V1_Z_COORDINATE = -1.5
-		this.V2_Z_COORDINATE = -0.5
-		this.V3_Z_COORDINATE =  0.5
+		this.V1_Z_COORDINATE = -3
+		this.V2_Z_COORDINATE = -1
+		this.V3_Z_COORDINATE =  1
 		
 		this.program = program
 		this.cubes = []
-		this.remainingRotationDegrees = 90
-
+		
 		this.cubes = this.cubes.concat(this.createRubicSlice(vec4(-1.5, -1.5, -1.5, 1.0), 0))
 		this.cubes = this.cubes.concat(this.createRubicSlice(vec4(-0.5, -1.5, -1.5, 1.0), 9))
 		this.cubes = this.cubes.concat(this.createRubicSlice(vec4(0.5, -1.5, -1.5, 1.0), 18))
+		// console.log(this.cubes[0].position, this.cubes[0].matModel)
+		// this.remainingRotationDegrees = 90
+		this.rotationQueue = [new Rotation(this, RotationSlice.VERTICAL1, 90),
+								new Rotation(this, RotationSlice.HORIZONTAL2, 90)]
 		
-		this.h3 = []
-		this.h2 = []
-		this.h1 = []
-		
-		this.v3 = []
-		this.v2 = []
-		this.v1 = []
+		this.h = [[], [], []]
+		this.v = [[], [], []]
 		
 		this.updateSlices()
 		
@@ -53,7 +51,28 @@ class Rubic {
 		this.cubes.forEach(cube => cube.render());
 		
 		// this.rotateHorizontal(2)
-		this.rotateVertical(1)
+		// this.rotateVertical(1)
+		
+		if (this.rotationQueue.length > 0)
+		{
+			// console.log(this.rotationQueue)
+
+			var top = this.rotationQueue[this.rotationQueue.length - 1]
+			// console.log(top)
+			if (top.degrees != 0)
+			{
+				top.perform()
+			}
+			else
+			{
+				this.rotationQueue.pop()
+				this.updateSlices()
+			}
+		}
+		else
+		{
+			// this.generateRandomRotation()
+		}
 		
 		// console.log(this.cubes[6].position[2])
 		
@@ -79,27 +98,23 @@ class Rubic {
 		switch(vNumber)
 		{
 			case 1:
-				v = this.v1
+				v = this.v[0]
 				break
 			case 2:
-				v = this.v2
+				v = this.v[1]
 				break
 			case 3:
-				v = this.v3
+				v = this.v[2]
 				break
 		}
 		
-		if(this.remainingRotationDegrees > 0)
-		{
-			v.forEach(cube => {
-				let i = cube.id
-				this.cubes[i].translateBy(0.5, 0.5, 0)
-				this.cubes[i].rotate(this.ROTATION_SPEED, vec3(0, 0, 1))
-				this.cubes[i].translateBy(-0.5, -0.5, 0)
-			})
-			
-			this.remainingRotationDegrees -= this.ROTATION_SPEED
-		}
+		
+		v.forEach(cube => {
+			let i = cube.id
+			this.cubes[i].translateBy(0.5, 0.5, 0)
+			this.cubes[i].rotate(this.ROTATION_SPEED, vec3(0, 0, 1))
+			this.cubes[i].translateBy(-0.5, -0.5, 0)
+		})	
 	}
 	
 	/**
@@ -118,27 +133,23 @@ class Rubic {
 		switch(hNumber)
 		{
 			case 1:
-				h = this.h1
+				h = this.h[0]
 				break
 			case 2:
-				h = this.h2
+				h = this.h[1]
 				break
 			case 3:
-				h = this.h3
+				h = this.h[2]
 				break
 		}
+
 		
-		if(this.remainingRotationDegrees > 0)
-		{
-			h.forEach(cube => {
-				let i = cube.id
-				this.cubes[i].translateBy(0.5, 0, 0.5)
-				this.cubes[i].rotate(this.ROTATION_SPEED, vec3(0, 1, 0))
-				this.cubes[i].translateBy(-0.5, 0, -0.5)
-			})
-			
-			this.remainingRotationDegrees -= this.ROTATION_SPEED
-		}
+		h.forEach(cube => {
+			let i = cube.id
+			this.cubes[i].translateBy(0.5, 0, 0.5)
+			this.cubes[i].rotate(this.ROTATION_SPEED, vec3(0, 1, 0))
+			this.cubes[i].translateBy(-0.5, 0, -0.5)
+		})
 	}
 	
 	/**
@@ -146,40 +157,47 @@ class Rubic {
 	 */
 	updateSlices()
 	{
-		this.h1 = []
-		this.h2 = []
-		this.h3 = []
-		this.v1 = []
-		this.v2 = []
-		this.v3 = []
+		var yDict = {}
+		var zDict = {}
 		
-		this.cubes.forEach(cube => {
+		this.h = [[], [], []]
+		this.v = [[], [], []]
+		
+		this.cubes.forEach(cube => {			
+			var currentPos = mult_v(cube.matModel, cube.position)
 			
-			switch(cube.position[1]) // y coordinate check for H slices
+			// var currentPos = cube.position
+			var currentY = currentPos[1]
+			var currentZ = currentPos[2]
+			// console.log(cube.id, currentY)
+			
+			currentY = Number(currentY.toFixed(4)); // rounding
+			currentZ = Number(currentZ.toFixed(4)); // rounding
+			
+			
+			if (yDict[currentY] == undefined)
 			{
-				case this.H3_Y_COORDINATE:
-					this.h3.push(cube)
-					break
-				case this.H2_Y_COORDINATE:
-					this.h2.push(cube)
-					break
-				case this.H1_Y_COORDINATE:
-					this.h1.push(cube)
-					break
+				yDict[currentY] = new Array()
+			}
+			if (zDict[currentZ] == undefined)
+			{
+				zDict[currentZ] = new Array()
 			}
 			
-			switch(cube.position[2]) // z coordinate check for V slices
-			{
-				case this.V1_Z_COORDINATE:
-					this.v1.push(cube)
-					break
-				case this.V2_Z_COORDINATE:
-					this.v2.push(cube)
-					break
-				case this.V3_Z_COORDINATE:
-					this.v3.push(cube)
-					break
-			}
+			yDict[currentY].push(cube)
+			zDict[currentZ].push(cube)
+		})
+		
+		var i = 0
+		Object.keys(yDict).sort((a, b) => a - b).forEach(key => {
+			this.h[i] = yDict[key]
+			i++
+		})
+		
+		i = 0
+		Object.keys(zDict).sort((a, b) => a - b).forEach(key => {
+			this.v[i] = zDict[key]
+			i++
 		})
 	}
 	
@@ -215,4 +233,75 @@ class Rubic {
 		
 		return cubes
 	}
+	
+	/**
+	 * Generates a random rotation instance and pushes it to the rotation queue
+	 */
+	generateRandomRotation()
+	{
+		let possibleRotations = Object.keys(RotationSlice)
+		let randomRotationSlice = possibleRotations[Math.floor(Math.random() * possibleRotations.length)]
+		
+		this.rotationQueue.push(new Rotation(this, RotationSlice[randomRotationSlice], 90))
+		// console.log(this.rotationQueue)
+	}
 }
+
+/**
+ * Describes a rotation that needs to be performed on the rubic's cube
+ */
+class Rotation 
+{	
+	/**
+	 * @param {RotationSlice} slice 
+	 * @param {number} degrees 
+	 */
+	constructor(rubic, slice, degrees)
+	{
+		this.rubic = rubic
+		this.slice = slice
+		this.degrees = degrees
+	}
+	
+	/**
+	 * Performs the rotation partially. This needs to be called repeatedly in render()
+	 * Changes this.degrees accordingly
+	 */
+	perform()
+	{
+		switch(this.slice)
+		{
+			case RotationSlice.HORIZONTAL1:
+				rubic.rotateHorizontal(1)
+				break
+			case RotationSlice.HORIZONTAL2:
+				rubic.rotateHorizontal(2)
+				break
+			case RotationSlice.HORIZONTAL3:
+				rubic.rotateHorizontal(3)
+				break
+			case RotationSlice.VERTICAL1:
+				rubic.rotateVertical(1)
+				break
+			case RotationSlice.VERTICAL2:
+				rubic.rotateVertical(2)
+				break
+			case RotationSlice.VERTICAL3:
+				rubic.rotateVertical(3)
+				break
+		}
+		
+		this.degrees -= rubic.ROTATION_SPEED
+	}
+}
+
+// Enum that contains the types of rotation
+const RotationSlice = Object.freeze({
+	HORIZONTAL1:   Symbol("H1"),
+	HORIZONTAL2:   Symbol("H2"),
+	HORIZONTAL3:   Symbol("H3"),
+	
+	VERTICAL1:  Symbol("V1"),
+	VERTICAL2:  Symbol("V2"),
+	VERTICAL3:  Symbol("V3"),
+})

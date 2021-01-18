@@ -16,7 +16,7 @@ class Cube extends _3DObject {
 			vec4( 0.5, -0.5, -0.5, 1.0 )
 		]
 		
-		// this.material.ambient = vec3(Math.random(), Math.random(), Math.random())
+		this.material.ambient = vec3(Math.random(), Math.random(), Math.random())
 	}
 
 	/**
