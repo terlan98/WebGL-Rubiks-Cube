@@ -8,16 +8,16 @@ class Rubic {
     *  H3 |   |   |   | /||
     *  ﹍﹍|___|___|___|/|/|
     *  H2 |   |   |   | /||---------(-z axis)
-    *  ﹍﹍|___|___|___|/|/
-    *  H1 |   |   |   | /
-    *  ﹍﹍|___|___|___|/ 
+    *  ﹍﹍|___|___|___|/|/  X3
+    *  H1 |   |   |   | /  X2
+    *  ﹍﹍|___|___|___|/ X1
 	*     ┆   ┆   ┆   ┆
 	*     ┆V3 ┆V2 ┆V1 ┆
 	*/
 	
 	constructor(program)
 	{
-		this.ROTATION_SPEED = 2
+		this.ROTATION_SPEED = 3
 	
 		this.H3_Y_COORDINATE =  1
 		this.H2_Y_COORDINATE = -1
@@ -35,8 +35,11 @@ class Rubic {
 		this.cubes = this.cubes.concat(this.createRubicSlice(vec4(0.5, -1.5, -1.5, 1.0), 18))
 		
 		
-		this.rotationQueue = [new Rotation(this, RotationSlice.VERTICAL3, 90),
-								new Rotation(this, RotationSlice.HORIZONTAL3, -90)]
+		// this.rotationQueue = [new Rotation(this, RotationSlice.X1, 90),
+		// 						new Rotation(this, RotationSlice.VERTICAL2, -90),
+		// 						new Rotation(this, RotationSlice.X3, -90)]
+		// this.rotationQueue = [new Rotation(this, RotationSlice.X3, 90)]
+		this.rotationQueue = []
 		
 		this.rubicArray = [ [ [ 8, 17, 26 ], [ 5, 14, 23 ], [ 2, 11, 20 ] ],
 							[ [ 7, 16, 25 ], [ 4, 13, 22 ], [ 1, 10, 19 ] ],
@@ -44,6 +47,8 @@ class Rubic {
 		
 		this.h = [[], [], []]
 		this.v = [[], [], []]
+		this.x = [[], [], []]
+		
 		console.log(this.rubicArray)
 		this.updateSlices()
 	}
@@ -70,16 +75,52 @@ class Rubic {
 		{
 			this.generateRandomRotation()
 		}
-				
-		// this.cubes[24].translateBy(0.5, 0.5, 0)
-		// this.cubes[24].rotate(1, vec3(0, 0, 1))
-		// this.cubes[24].translateBy(-0.5, -0.5, 0)
+	}
+	
+	/**
+	 * Rotates one of the X slices based on the given input.
+	 * @param xNumber a number in range 1-3, indicating the X slice to be rotated
+	 * @param isNegative a boolean indicating whether the rotation is in negative direction
+	 */
+	rotateX(xNumber, isNegative)
+	{
+		if (xNumber == undefined) {
+			console.log("NO V NUMBER PROVIDED")
+			return
+		}
 		
+		var x = []
+		
+		switch(xNumber)
+		{
+			case 1:
+				x = this.x[0]
+				break
+			case 2:
+				x = this.x[1]
+				break
+			case 3:
+				x = this.x[2]
+				break
+		}
+		
+		var speed = this.ROTATION_SPEED
+		if (isNegative)
+		{
+			speed *= -1
+		}
+		
+		x.forEach(id => {
+			this.cubes[id].translateBy(0, 0.5, 0.5)
+			this.cubes[id].rotate(speed, vec3(1, 0, 0))
+			this.cubes[id].translateBy(0, -0.5, -0.5)
+		})
 	}
 	
 	/**
 	 * Rotates one of the V slices based on the given input.
 	 * @param vNumber a number in range 1-3, indicating the V slice to be rotated
+	 * @param isNegative a boolean indicating whether the rotation is in negative direction
 	 */
 	rotateVertical(vNumber, isNegative)
 	{
@@ -113,12 +154,13 @@ class Rubic {
 			this.cubes[id].translateBy(0.5, 0.5, 0)
 			this.cubes[id].rotate(speed, vec3(0, 0, 1))
 			this.cubes[id].translateBy(-0.5, -0.5, 0)
-		})	
+		})
 	}
 	
 	/**
 	 * Rotates one of the H slices based on the given input.
 	 * @param hNumber a number in range 1-3, indicating the H slice to be rotated
+	 * @param isNegative a boolean indicating whether the rotation is in negative direction
 	 */
 	rotateHorizontal(hNumber, isNegative)
 	{
@@ -165,7 +207,7 @@ class Rubic {
 		
 		this.h = [[], [], []]
 		this.v = [[], [], []]
-
+		this.x = [[], [], []]
 		
 		var newRubic = JSON.parse(JSON.stringify(this.rubicArray)); // deep copying rubic array
 		
@@ -361,6 +403,99 @@ class Rubic {
 						newRubic[0][2][2] = this.rubicArray[0][0][2]	
 					}
 					break
+				
+				case RotationSlice.X1:
+					if(isNegative)
+					{
+						newRubic[0][2][2] = this.rubicArray[0][0][2]
+						newRubic[0][1][2] = this.rubicArray[1][0][2]
+						newRubic[0][0][2] = this.rubicArray[2][0][2]
+						
+						newRubic[1][2][2] = this.rubicArray[0][1][2]
+						newRubic[1][1][2] = this.rubicArray[1][1][2]
+						newRubic[1][0][2] = this.rubicArray[2][1][2]
+						
+						newRubic[2][2][2] = this.rubicArray[0][2][2]
+						newRubic[2][1][2] = this.rubicArray[1][2][2]
+						newRubic[2][0][2] = this.rubicArray[2][2][2]
+					}
+					else
+					{
+						newRubic[0][2][2] = this.rubicArray[2][2][2]
+						newRubic[0][1][2] = this.rubicArray[1][2][2]
+						newRubic[0][0][2] = this.rubicArray[0][2][2]
+						
+						newRubic[1][2][2] = this.rubicArray[2][1][2]
+						newRubic[1][1][2] = this.rubicArray[1][1][2]
+						newRubic[1][0][2] = this.rubicArray[0][1][2]
+						
+						newRubic[2][2][2] = this.rubicArray[2][0][2]
+						newRubic[2][1][2] = this.rubicArray[1][0][2]
+						newRubic[2][0][2] = this.rubicArray[0][0][2]
+					}
+					break
+					
+				case RotationSlice.X2:
+					if(isNegative)
+					{
+						newRubic[0][2][1] = this.rubicArray[0][0][1]
+						newRubic[0][1][1] = this.rubicArray[1][0][1]
+						newRubic[0][0][1] = this.rubicArray[2][0][1]
+						
+						newRubic[1][2][1] = this.rubicArray[0][1][1]
+						newRubic[1][1][1] = this.rubicArray[1][1][1]
+						newRubic[1][0][1] = this.rubicArray[2][1][1]
+						
+						newRubic[2][2][1] = this.rubicArray[0][2][1]
+						newRubic[2][1][1] = this.rubicArray[1][2][1]
+						newRubic[2][0][1] = this.rubicArray[2][2][1]
+					}
+					else
+					{
+						newRubic[0][2][1] = this.rubicArray[2][2][1]
+						newRubic[0][1][1] = this.rubicArray[1][2][1]
+						newRubic[0][0][1] = this.rubicArray[0][2][1]
+						
+						newRubic[1][2][1] = this.rubicArray[2][1][1]
+						newRubic[1][1][1] = this.rubicArray[1][1][1]
+						newRubic[1][0][1] = this.rubicArray[0][1][1]
+						
+						newRubic[2][2][1] = this.rubicArray[2][0][1]
+						newRubic[2][1][1] = this.rubicArray[1][0][1]
+						newRubic[2][0][1] = this.rubicArray[0][0][1]
+					}
+					break
+				
+				case RotationSlice.X3:
+					if(isNegative)
+					{
+						newRubic[0][2][0] = this.rubicArray[0][0][0]
+						newRubic[0][1][0] = this.rubicArray[1][0][0]
+						newRubic[0][0][0] = this.rubicArray[2][0][0]
+						
+						newRubic[1][2][0] = this.rubicArray[0][1][0]
+						newRubic[1][1][0] = this.rubicArray[1][1][0]
+						newRubic[1][0][0] = this.rubicArray[2][1][0]
+						
+						newRubic[2][2][0] = this.rubicArray[0][2][0]
+						newRubic[2][1][0] = this.rubicArray[1][2][0]
+						newRubic[2][0][0] = this.rubicArray[2][2][0]
+					}
+					else
+					{
+						newRubic[0][2][0] = this.rubicArray[2][2][0]
+						newRubic[0][1][0] = this.rubicArray[1][2][0]
+						newRubic[0][0][0] = this.rubicArray[0][2][0]
+						
+						newRubic[1][2][0] = this.rubicArray[2][1][0]
+						newRubic[1][1][0] = this.rubicArray[1][1][0]
+						newRubic[1][0][0] = this.rubicArray[0][1][0]
+						
+						newRubic[2][2][0] = this.rubicArray[2][0][0]
+						newRubic[2][1][0] = this.rubicArray[1][0][0]
+						newRubic[2][0][0] = this.rubicArray[0][0][0]
+					}
+					break
 			}
 			
 			console.log("newRubic:",newRubic)
@@ -368,6 +503,7 @@ class Rubic {
 		}
 		
 		// Assigning proper values to slices (to be used by rotation functions)
+		// H-slice
 		this.h[0] = this.h[0].concat(this.rubicArray[2][2])
 		this.h[0] = this.h[0].concat(this.rubicArray[2][1])
 		this.h[0] = this.h[0].concat(this.rubicArray[2][0])
@@ -380,6 +516,7 @@ class Rubic {
 		this.h[2] = this.h[2].concat(this.rubicArray[0][1])
 		this.h[2] = this.h[2].concat(this.rubicArray[0][0])
 		
+		// V-slice
 		this.v[0] = this.v[0].concat(this.rubicArray[2][2])
 		this.v[0] = this.v[0].concat(this.rubicArray[1][2])
 		this.v[0] = this.v[0].concat(this.rubicArray[0][2])
@@ -392,7 +529,36 @@ class Rubic {
 		this.v[2] = this.v[2].concat(this.rubicArray[1][0])
 		this.v[2] = this.v[2].concat(this.rubicArray[0][0])
 		
-		console.log("H:", this.h)
+		// X-slice
+		this.x[0].push(this.rubicArray[0][2][2])
+		this.x[0].push(this.rubicArray[0][1][2])
+		this.x[0].push(this.rubicArray[0][0][2])
+		this.x[0].push(this.rubicArray[1][2][2])
+		this.x[0].push(this.rubicArray[1][1][2])
+		this.x[0].push(this.rubicArray[1][0][2])
+		this.x[0].push(this.rubicArray[2][2][2])
+		this.x[0].push(this.rubicArray[2][1][2])
+		this.x[0].push(this.rubicArray[2][0][2])
+		
+		this.x[1].push(this.rubicArray[0][2][1])
+		this.x[1].push(this.rubicArray[0][1][1])
+		this.x[1].push(this.rubicArray[0][0][1])
+		this.x[1].push(this.rubicArray[1][2][1])
+		this.x[1].push(this.rubicArray[1][1][1])
+		this.x[1].push(this.rubicArray[1][0][1])
+		this.x[1].push(this.rubicArray[2][2][1])
+		this.x[1].push(this.rubicArray[2][1][1])
+		this.x[1].push(this.rubicArray[2][0][1])
+		
+		this.x[2].push(this.rubicArray[0][2][0])
+		this.x[2].push(this.rubicArray[0][1][0])
+		this.x[2].push(this.rubicArray[0][0][0])
+		this.x[2].push(this.rubicArray[1][2][0])
+		this.x[2].push(this.rubicArray[1][1][0])
+		this.x[2].push(this.rubicArray[1][0][0])
+		this.x[2].push(this.rubicArray[2][2][0])
+		this.x[2].push(this.rubicArray[2][1][0])
+		this.x[2].push(this.rubicArray[2][0][0])
 	}
 	
 	
@@ -484,6 +650,15 @@ class Rotation
 			case RotationSlice.VERTICAL3:
 				rubic.rotateVertical(3, this.isNegative)
 				break
+			case RotationSlice.X1:
+				rubic.rotateX(1, this.isNegative)
+				break
+			case RotationSlice.X2:
+				rubic.rotateX(2, this.isNegative)
+				break
+			case RotationSlice.X3:
+				rubic.rotateX(3, this.isNegative)
+				break
 		}
 		
 		if(this.isNegative)
@@ -506,4 +681,8 @@ const RotationSlice = Object.freeze({
 	VERTICAL1:  Symbol("V1"),
 	VERTICAL2:  Symbol("V2"),
 	VERTICAL3:  Symbol("V3"),
+	
+	X1:  Symbol("X1"),
+	X2:  Symbol("X2"),
+	X3:  Symbol("X3")
 })
