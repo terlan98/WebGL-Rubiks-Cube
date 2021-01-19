@@ -35,10 +35,11 @@ class Rubic {
 		this.cubes = this.cubes.concat(this.createRubicSlice(vec4(0.5, -1.5, -1.5, 1.0), 18))
 		
 		
+		this.randomRotationsEnabled = true
 		// this.rotationQueue = [new Rotation(this, RotationSlice.X1, 90),
 		// 						new Rotation(this, RotationSlice.VERTICAL2, -90),
-		// 						new Rotation(this, RotationSlice.X3, -90)]
-		// this.rotationQueue = [new Rotation(this, RotationSlice.X3, 90)]
+		// 						new Rotation(this, RotationSlice.X1, 90)]
+		// this.rotationQueue = [new Rotation(this, RotationSlice.X1, -90)]
 		this.rotationQueue = []
 		
 		this.rubicArray = [ [ [ 8, 17, 26 ], [ 5, 14, 23 ], [ 2, 11, 20 ] ],
@@ -49,7 +50,7 @@ class Rubic {
 		this.v = [[], [], []]
 		this.x = [[], [], []]
 		
-		console.log(this.rubicArray)
+		// console.log(this.rubicArray)
 		this.updateSlices()
 	}
 	
@@ -73,7 +74,10 @@ class Rubic {
 		}
 		else
 		{
-			this.generateRandomRotation()
+			if(this.randomRotationsEnabled)
+			{
+				this.generateRandomRotation()
+			}
 		}
 	}
 	
@@ -480,7 +484,7 @@ class Rubic {
 					break
 			}
 			
-			console.log("newRubic:",newRubic)
+			// console.log("newRubic:",newRubic)
 			this.rubicArray = newRubic
 		}
 		
@@ -585,7 +589,19 @@ class Rubic {
 		let randomRotationSlice = possibleRotations[Math.floor(Math.random() * possibleRotations.length)]
 		
 		this.rotationQueue.push(new Rotation(this, RotationSlice[randomRotationSlice], [90,-90][Math.floor(Math.random() * 2)]))
-		// console.log(this.rotationQueue)
+	}
+	
+	/**
+	 * Enqueues a new positive or negative rotation for the given slice
+	 * @param {RotationSlice} rotationSlice 
+	 * @param {boolean} isNegative 
+	 */
+	enqueueRotation(rotationSlice, isNegative)
+	{
+		var degrees = 90
+		if(isNegative) degrees *= -1
+		
+		this.rotationQueue.unshift(new Rotation(this, rotationSlice, degrees))
 	}
 }
 

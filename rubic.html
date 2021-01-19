@@ -1,4 +1,5 @@
 <html>
+<head><link rel="stylesheet" href="style.css"></head>
 
 <script id="vertex-shader" type="x-shader/x-vertex">
 	
@@ -81,11 +82,65 @@
 <script type="text/javascript" src="main.js"></script>
 
 <body>
-<canvas id="gl-canvas" width="512"" height="512">
+<canvas id="gl-canvas" width="512"" height="512" style = "float: left">
 Oops ... your browser doesn't support the HTML5 canvas element
 </canvas>
-   
-<br/>
+	
+<!-- <br/> -->
+
+<table style = "float: left">
+	<tr>
+	  <th colspan="3">
+		<!-- Rounded switch -->
+		<label class="switch">
+		  <input type="checkbox" id="switch" checked>
+		  <span class="slider round"></span>
+		</label>
+		<br>
+		Infinite Random Animation Toggle
+	  </th>
+	</tr>
+	<tr>
+	  <td>
+		<button class="myButton" id = "btn_h3_pos">H3 +</button>
+		<button class="myButton" id = "btn_h3_neg">H3 -</button> 
+	  	</br></br>
+		<button class="myButton" id = "btn_h2_pos">H2 +</button>
+		<button class="myButton" id = "btn_h2_neg">H2 -</button>
+		</br></br>
+		<button class="myButton" id = "btn_h1_pos">H1 +</button>
+		<button class="myButton" id = "btn_h1_neg">H1 -</button>
+	  </td>
+	  <td>
+			Structure of the Cube
+	  </br></br>
+		  <img src="rubicAnatomy.jpg" id = "rubicImg">
+		</td>
+	  <td>
+		<button class="myButton" id = "btn_x3_pos">X3 +</button>
+		<button class="myButton" id = "btn_x3_neg">X3 -</button> 
+	  	</br></br>
+		<button class="myButton" id = "btn_x2_pos">X2 +</button>
+		<button class="myButton" id = "btn_x2_neg">X2 -</button>
+		</br></br>
+		<button class="myButton" id = "btn_x1_pos">X1 +</button>
+		<button class="myButton" id = "btn_x1_neg">X1 -</button>
+	  </td>
+	</tr>
+	<tr>
+	  <!-- <td></td> -->
+	  <td colspan="3">
+		<button class="myButton" id = "btn_v3_pos">V3 +</button>
+		<button class="myButton" id = "btn_v3_neg">V3 -</button> 
+	  	<!-- </br></br> -->
+		<button class="myButton withLeftMargin" id = "btn_v2_pos">V2 +</button>
+		<button class="myButton" id = "btn_v2_neg">V2 -</button>
+		</br>
+		<button class="myButton" id = "btn_v1_pos">V1 +</button>
+		<button class="myButton " id = "btn_v1_neg">V1 -</button>
+	  </td>
+	</tr>
+</table>
 
 </body>
 </html>
