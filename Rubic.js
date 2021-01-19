@@ -226,7 +226,6 @@ class Rubic {
 						newRubic[2][2][2] = this.rubicArray[0][2][2]
 						
 						newRubic[1][2][0] = this.rubicArray[2][2][1]
-						newRubic[1][2][1] = this.rubicArray[1][2][1]
 						newRubic[1][2][2] = this.rubicArray[0][2][1]
 						
 						newRubic[0][2][0] = this.rubicArray[2][2][0]
@@ -240,7 +239,6 @@ class Rubic {
 						newRubic[2][2][2] = this.rubicArray[2][2][0]
 						
 						newRubic[1][2][0] = this.rubicArray[0][2][1]
-						newRubic[1][2][1] = this.rubicArray[1][2][1]
 						newRubic[1][2][2] = this.rubicArray[2][2][1]
 						
 						newRubic[0][2][0] = this.rubicArray[0][2][2]
@@ -257,7 +255,6 @@ class Rubic {
 						newRubic[0][1][2] = this.rubicArray[0][1][0]
 						
 						newRubic[1][1][0] = this.rubicArray[2][1][1]
-						newRubic[1][1][1] = this.rubicArray[1][1][1]
 						newRubic[1][1][2] = this.rubicArray[0][1][1]
 						
 						newRubic[2][1][0] = this.rubicArray[2][1][2]
@@ -271,7 +268,6 @@ class Rubic {
 						newRubic[0][1][2] = this.rubicArray[2][1][2]
 						
 						newRubic[1][1][0] = this.rubicArray[0][1][1]
-						newRubic[1][1][1] = this.rubicArray[1][1][1]
 						newRubic[1][1][2] = this.rubicArray[2][1][1]
 						
 						newRubic[2][1][0] = this.rubicArray[0][1][0]
@@ -288,7 +284,6 @@ class Rubic {
 						newRubic[0][0][2] = this.rubicArray[0][0][0]
 						
 						newRubic[1][0][0] = this.rubicArray[2][0][1]
-						newRubic[1][0][1] = this.rubicArray[1][0][1]
 						newRubic[1][0][2] = this.rubicArray[0][0][1]
 						
 						newRubic[2][0][0] = this.rubicArray[2][0][2]
@@ -302,7 +297,6 @@ class Rubic {
 						newRubic[0][0][2] = this.rubicArray[2][0][2]
 						
 						newRubic[1][0][0] = this.rubicArray[0][0][1]
-						newRubic[1][0][1] = this.rubicArray[1][0][1]
 						newRubic[1][0][2] = this.rubicArray[2][0][1]
 						
 						newRubic[2][0][0] = this.rubicArray[0][0][0]
@@ -319,7 +313,6 @@ class Rubic {
 						newRubic[2][0][2] = this.rubicArray[2][2][2]
 						
 						newRubic[2][1][0] = this.rubicArray[2][0][1]
-						newRubic[2][1][1] = this.rubicArray[2][1][1]
 						newRubic[2][1][2] = this.rubicArray[2][2][1]
 						
 						newRubic[2][2][0] = this.rubicArray[2][0][0]
@@ -333,7 +326,6 @@ class Rubic {
 						newRubic[2][0][2] = this.rubicArray[2][0][0]
 						
 						newRubic[2][1][0] = this.rubicArray[2][2][1]
-						newRubic[2][1][1] = this.rubicArray[2][1][1]
 						newRubic[2][1][2] = this.rubicArray[2][0][1]
 						
 						newRubic[2][2][0] = this.rubicArray[2][2][2]
@@ -350,7 +342,6 @@ class Rubic {
 						newRubic[1][0][2] = this.rubicArray[1][2][2]
 						
 						newRubic[1][1][0] = this.rubicArray[1][0][1]
-						newRubic[1][1][1] = this.rubicArray[1][1][1]
 						newRubic[1][1][2] = this.rubicArray[1][2][1]
 						
 						newRubic[1][2][0] = this.rubicArray[1][0][0]
@@ -364,7 +355,6 @@ class Rubic {
 						newRubic[1][0][2] = this.rubicArray[1][0][0]
 						
 						newRubic[1][1][0] = this.rubicArray[1][2][1]
-						newRubic[1][1][1] = this.rubicArray[1][1][1]
 						newRubic[1][1][2] = this.rubicArray[1][0][1]
 						
 						newRubic[1][2][0] = this.rubicArray[1][2][2]
@@ -381,7 +371,6 @@ class Rubic {
 						newRubic[0][0][2] = this.rubicArray[0][2][2]
 						
 						newRubic[0][1][0] = this.rubicArray[0][0][1]
-						newRubic[0][1][1] = this.rubicArray[0][1][1]
 						newRubic[0][1][2] = this.rubicArray[0][2][1]
 						
 						newRubic[0][2][0] = this.rubicArray[0][0][0]
@@ -395,7 +384,6 @@ class Rubic {
 						newRubic[0][0][2] = this.rubicArray[0][0][0]
 						
 						newRubic[0][1][0] = this.rubicArray[0][2][1]
-						newRubic[0][1][1] = this.rubicArray[0][1][1]
 						newRubic[0][1][2] = this.rubicArray[0][0][1]
 						
 						newRubic[0][2][0] = this.rubicArray[0][2][2]
@@ -412,7 +400,6 @@ class Rubic {
 						newRubic[0][0][2] = this.rubicArray[2][0][2]
 						
 						newRubic[1][2][2] = this.rubicArray[0][1][2]
-						newRubic[1][1][2] = this.rubicArray[1][1][2]
 						newRubic[1][0][2] = this.rubicArray[2][1][2]
 						
 						newRubic[2][2][2] = this.rubicArray[0][2][2]
@@ -426,7 +413,6 @@ class Rubic {
 						newRubic[0][0][2] = this.rubicArray[0][2][2]
 						
 						newRubic[1][2][2] = this.rubicArray[2][1][2]
-						newRubic[1][1][2] = this.rubicArray[1][1][2]
 						newRubic[1][0][2] = this.rubicArray[0][1][2]
 						
 						newRubic[2][2][2] = this.rubicArray[2][0][2]
@@ -443,7 +429,6 @@ class Rubic {
 						newRubic[0][0][1] = this.rubicArray[2][0][1]
 						
 						newRubic[1][2][1] = this.rubicArray[0][1][1]
-						newRubic[1][1][1] = this.rubicArray[1][1][1]
 						newRubic[1][0][1] = this.rubicArray[2][1][1]
 						
 						newRubic[2][2][1] = this.rubicArray[0][2][1]
@@ -457,7 +442,6 @@ class Rubic {
 						newRubic[0][0][1] = this.rubicArray[0][2][1]
 						
 						newRubic[1][2][1] = this.rubicArray[2][1][1]
-						newRubic[1][1][1] = this.rubicArray[1][1][1]
 						newRubic[1][0][1] = this.rubicArray[0][1][1]
 						
 						newRubic[2][2][1] = this.rubicArray[2][0][1]
@@ -474,7 +458,6 @@ class Rubic {
 						newRubic[0][0][0] = this.rubicArray[2][0][0]
 						
 						newRubic[1][2][0] = this.rubicArray[0][1][0]
-						newRubic[1][1][0] = this.rubicArray[1][1][0]
 						newRubic[1][0][0] = this.rubicArray[2][1][0]
 						
 						newRubic[2][2][0] = this.rubicArray[0][2][0]
@@ -488,7 +471,6 @@ class Rubic {
 						newRubic[0][0][0] = this.rubicArray[0][2][0]
 						
 						newRubic[1][2][0] = this.rubicArray[2][1][0]
-						newRubic[1][1][0] = this.rubicArray[1][1][0]
 						newRubic[1][0][0] = this.rubicArray[0][1][0]
 						
 						newRubic[2][2][0] = this.rubicArray[2][0][0]
