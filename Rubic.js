@@ -35,7 +35,7 @@ class Rubic {
 		this.cubes = this.cubes.concat(this.createRubicSlice(vec4(0.5, -1.5, -1.5, 1.0), 18))
 		
 		
-		this.randomRotationsEnabled = true
+		this.randomRotationsEnabled = false
 		// this.rotationQueue = [new Rotation(this, RotationSlice.X1, 90),
 		// 						new Rotation(this, RotationSlice.VERTICAL2, -90),
 		// 						new Rotation(this, RotationSlice.X1, 90)]
@@ -50,7 +50,6 @@ class Rubic {
 		this.v = [[], [], []]
 		this.x = [[], [], []]
 		
-		// console.log(this.rubicArray)
 		this.updateSlices()
 	}
 	

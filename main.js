@@ -25,7 +25,7 @@ window.onload = function init()
 	
 	rubic = new Rubic(program)
 		
-	camera.translateBy(-1, -1, -1)
+	camera.translateBy(-2, -1.8, -2)
 	
 	this.setUpButtons()
 		
