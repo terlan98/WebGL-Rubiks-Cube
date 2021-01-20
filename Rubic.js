@@ -36,10 +36,7 @@ class Rubic {
 		
 		
 		this.randomRotationsEnabled = false
-		// this.rotationQueue = [new Rotation(this, RotationSlice.X1, 90),
-		// 						new Rotation(this, RotationSlice.VERTICAL2, -90),
-		// 						new Rotation(this, RotationSlice.X1, 90)]
-		// this.rotationQueue = [new Rotation(this, RotationSlice.X1, -90)]
+		
 		this.rotationQueue = []
 		
 		this.rubicArray = [ [ [ 8, 17, 26 ], [ 5, 14, 23 ], [ 2, 11, 20 ] ],
@@ -71,12 +68,9 @@ class Rubic {
 				this.updateSlices(lastRotation)
 			}
 		}
-		else
+		else if(this.randomRotationsEnabled)
 		{
-			if(this.randomRotationsEnabled)
-			{
-				this.generateRandomRotation()
-			}
+			this.generateRandomRotation()
 		}
 	}
 	
