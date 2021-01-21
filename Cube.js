@@ -213,14 +213,8 @@ class Cube extends _3DObject {
 						  gl.NEAREST_MIPMAP_LINEAR );
 		gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST );
 		
-		if(id == 1)
-		{
-			gl.activeTexture( gl.TEXTURE0 );
-		}
-		else
-		{
-			gl.activeTexture( gl.TEXTURE1 );
-		}
+		gl.activeTexture(gl.TEXTURE0 + (1-id))
+		
 		gl.uniform1i(gl.getUniformLocation(program, textureName), id);
 	}
 }

@@ -1,6 +1,7 @@
 class Camera {	
     SENSITIVITY = 0.3
     SPEED = 0.08
+    TRACKBALL_SPEED = 2
     
     yaw = -134.0
     pitch = -27.0
@@ -8,7 +9,9 @@ class Camera {
     constructor(program, position, target, up) {
         this.program = program;
         this.position = position;
+        this.initPosition = position;
         this.target = target;
+        this.initTarget = target;
         this.up = up;
         this.front = normalize(subtract(this.target, this.position))
     }
@@ -39,21 +42,18 @@ class Camera {
         if(this.pitch > 89.0) this.pitch = 89.0
         if(this.pitch < -89.0) this.pitch = -89.0
         
-        // console.log(this.pitch, this.yaw)
-        
         var directionX = Math.cos(radians(this.yaw)) * Math.cos(radians(this.pitch))
         var directionY = Math.sin(radians(this.pitch));
         var directionZ = Math.sin(radians(this.yaw)) * Math.cos(radians(this.pitch))
         var direction = vec3(directionX, directionY, directionZ)
         
         this.target = add(this.position, normalize(direction))
-        // console.log(this.front)
     }
 
-	// rotate(angle) 
-	// {
-    //     this.position = vec3(mult_v(rotate(angle, vec3(0, 1, 0)), vec4(this.position)));
-	// }
+	rotateAround(angle, vector3) 
+	{
+        this.position = vec3(mult_v(rotate(angle, vector3), vec4(this.position)));
+	}
 	
 	/**
 	 * 
@@ -64,11 +64,14 @@ class Camera {
 		this.position = vec3(mult_v(translate(x, y, z), vec4(this.position)));
     }
     
+    reset()
+    {
+        this.position = this.initPosition
+        this.target = this.initTarget
+    }
+    
     moveForward()
     {
-        // this.translateBy(this.front)
-        // this.target = add(this.position, this.front)
-        
         var delta = scale(this.SPEED, this.front)        
         this.translateBy(delta)
         this.target = add(this.position, delta)
@@ -89,6 +92,15 @@ class Camera {
         this.target = add(this.position, scale(this.SPEED, this.front))
     }
     
+    moveRightWithTrackBall()
+    {
+        this.target = vec3(-0.5, -0.5, -0.5)
+        
+        this.translateBy(0.4, 0, 0.4)
+        this.rotateAround(this.TRACKBALL_SPEED, vec3(0, 1, 0))
+        this.translateBy(-0.4, 0, -0.4)
+    }
+    
     moveLeft()
     {
         var cameraLeft = normalize(cross(this.up, this.front))
@@ -97,16 +109,45 @@ class Camera {
         this.target = add(this.position, scale(this.SPEED, this.front))
     }
     
+    moveLeftWithTrackBall()
+    {
+        this.target = vec3(-0.5, -0.5, -0.5)
+                
+        this.translateBy(0.4, 0, 0.4)
+        this.rotateAround(-this.TRACKBALL_SPEED, vec3(0, 1, 0))
+        this.translateBy(-0.4, 0, -0.4)
+    }
+    
     moveUp()
     {    
         this.translateBy(scale(this.SPEED, this.up))
         this.target = add(this.position, scale(this.SPEED, this.front))
     }
     
+    moveUpWithTrackBall()
+    {
+        this.target = vec3(-0.5, -0.5, -0.5)
+        
+        if(this.position[1] <= 5)
+        {            
+            this.translateBy(scale(this.SPEED, this.up)) // up
+        }
+    }
+    
     moveDown()
-    {        
+    {
         this.translateBy(negate(scale(this.SPEED, this.up)))
         this.target = subtract(this.position, negate(scale(this.SPEED, this.front)))
+    }
+    
+    moveDownWithTrackBall()
+    {
+        this.target = vec3(-0.5, -0.5, -0.5)
+        
+        if(this.position[1] >= -5)
+        {            
+            this.translateBy(negate(scale(this.SPEED, this.up))) // down
+        }
     }
 }
 

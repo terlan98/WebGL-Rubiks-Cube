@@ -88,6 +88,7 @@ td[colspan="3"] {
 .myButton {
 	background-color: #2196F3;
 	border: none;
+	border-radius: 15px;
 	color: white;
 	padding: 10px 25px;
 	width: 85px;

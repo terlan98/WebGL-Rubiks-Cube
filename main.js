@@ -10,6 +10,9 @@ var lastX
 var lastY
 
 var firstMouse = true
+var trackballEnabled = false
+var trackballLastX = 0
+var trackballLastY = 0
 
 window.onload = function init()
 {   
@@ -20,12 +23,12 @@ window.onload = function init()
 	
 	//original cam position: vec3(4, 3.5, 4)
 	// camera = new Camera(program, vec3(0, 0, 6), vec3(0, 0, 0), vec3(0, 1, 0))
-	camera = new Camera(program, vec3(4, 3.5, 4), vec3(0, 0, 0), vec3(0, 1, 0))
+	camera = new Camera(program, vec3(2, 1.7, 2), vec3(0, 0, 0), vec3(0, 1, 0))
     light = new Light(program, vec4(2, 3, 1, 1))
 	
 	rubic = new Rubic(program)
-		
-	camera.translateBy(-2, -1.8, -2)
+	
+	// camera.translateBy(-2, -1.8, -2)
 	
 	this.setUpButtons()
 		
@@ -41,11 +44,23 @@ window.onload = function init()
 	
 	canvas.addEventListener("mousemove", function(event)
 	{
-		// var x = 2 * event.clientX / canvas.width-1;
-		// var y = 2 * (canvas.height - event.clientY) / canvas.height-1;
-		
-		// mouseDidMove(x, y);
 		mouseDidMove(event.clientX, event.clientY)
+		
+		var x = 2*event.clientX/canvas.width-1;
+		var y = 2*(canvas.height-event.clientY)/canvas.height-1;
+		trackBallDidMove(x, y);
+	});
+	
+	canvas.addEventListener("mousedown", function(event){
+		var x = 2*event.clientX/canvas.width-1;
+		var y = 2*(canvas.height-event.clientY)/canvas.height-1;
+		enableTrackball(x, y);
+	});
+  
+	canvas.addEventListener("mouseup", function(event){
+		var x = 2*event.clientX/canvas.width-1;
+		var y = 2*(canvas.height-event.clientY)/canvas.height-1;
+		disableTrackball(x, y);
 	});
 	
 	render()
@@ -60,72 +75,55 @@ function render()
 	rubic.render()
 	
 	// light.rotate(1)
-	
+		
 	requestAnimFrame( render );
 }
 
-function setUpButtons()
+function enableTrackball(x, y)
 {
-	document.getElementById( "switch" ).onclick = function () {
-		rubic.randomRotationsEnabled = !rubic.randomRotationsEnabled
+	trackballEnabled = true;
+	trackballLastX = x
+	trackballLastY = y
+	this.camera.reset()
+	console.log("tball enabled")
+}
+
+function disableTrackball(x, y)
+{
+	trackballEnabled = false;
+}
+
+function trackBallDidMove(x, y)
+{
+	if(!trackballEnabled)
+	{
+		return
 	}
 	
-	document.getElementById( "btn_x1_pos" ).onclick = function () {
-		didPressRotateButton("btn_x1_pos")
+	var xDiff = x - trackballLastX
+	var yDiff = y - trackballLastY
+	// console.log(x - trackballLastX, y - trackballLastY)
+	
+	if (xDiff > 0)
+	{
+		this.camera.moveLeftWithTrackBall()
 	}
-	document.getElementById( "btn_x1_neg" ).onclick = function () {
-		didPressRotateButton("btn_x1_neg")
-	}
-	document.getElementById( "btn_x2_pos" ).onclick = function () {
-		didPressRotateButton("btn_x2_pos")
-	}
-	document.getElementById( "btn_x2_neg" ).onclick = function () {
-		didPressRotateButton("btn_x2_neg")
-	}
-	document.getElementById( "btn_x3_pos" ).onclick = function () {
-		didPressRotateButton("btn_x3_pos")
-	}
-	document.getElementById( "btn_x3_neg" ).onclick = function () {
-		didPressRotateButton("btn_x3_neg")
+	else if (xDiff < 0)
+	{
+		this.camera.moveRightWithTrackBall()
 	}
 	
-	document.getElementById( "btn_h1_pos" ).onclick = function () {
-		didPressRotateButton("btn_h1_pos")
+	if (yDiff > 0)
+	{
+		this.camera.moveDownWithTrackBall()
 	}
-	document.getElementById( "btn_h1_neg" ).onclick = function () {
-		didPressRotateButton("btn_h1_neg")
-	}
-	document.getElementById( "btn_h2_pos" ).onclick = function () {
-		didPressRotateButton("btn_h2_pos")
-	}
-	document.getElementById( "btn_h2_neg" ).onclick = function () {
-		didPressRotateButton("btn_h2_neg")
-	}
-	document.getElementById( "btn_h3_pos" ).onclick = function () {
-		didPressRotateButton("btn_h3_pos")
-	}
-	document.getElementById( "btn_h3_neg" ).onclick = function () {
-		didPressRotateButton("btn_h3_neg")
+	else if (yDiff < 0)
+	{
+		this.camera.moveUpWithTrackBall()
 	}
 	
-	document.getElementById( "btn_v1_pos" ).onclick = function () {
-		didPressRotateButton("btn_v1_pos")
-	}
-	document.getElementById( "btn_v1_neg" ).onclick = function () {
-		didPressRotateButton("btn_v1_neg")
-	}
-	document.getElementById( "btn_v2_pos" ).onclick = function () {
-		didPressRotateButton("btn_v2_pos")
-	}
-	document.getElementById( "btn_v2_neg" ).onclick = function () {
-		didPressRotateButton("btn_v2_neg")
-	}
-	document.getElementById( "btn_v3_pos" ).onclick = function () {
-		didPressRotateButton("btn_v3_pos")
-	}
-	document.getElementById( "btn_v3_neg" ).onclick = function () {
-		didPressRotateButton("btn_v3_neg")
-	}
+	trackballLastX = x
+	trackballLastY = y
 }
 
 function didPressKey(key)
@@ -164,6 +162,11 @@ function mouseDidMove(x, y)
 	// console.log([x, y])
 	return
 	
+	if (trackballEnabled)
+	{
+		return
+	}
+	console.log("cam moves ")
 	if (firstMouse)
     {
         lastX = x;
@@ -274,4 +277,68 @@ function initWebGL()
 	//
 	program = initShaders( gl, "vertex-shader", "fragment-shader" );
 	gl.useProgram( program );
+}
+
+function setUpButtons()
+{
+	document.getElementById( "switch" ).onclick = function () {
+		rubic.randomRotationsEnabled = !rubic.randomRotationsEnabled
+	}
+	
+	document.getElementById( "btn_x1_pos" ).onclick = function () {
+		didPressRotateButton("btn_x1_pos")
+	}
+	document.getElementById( "btn_x1_neg" ).onclick = function () {
+		didPressRotateButton("btn_x1_neg")
+	}
+	document.getElementById( "btn_x2_pos" ).onclick = function () {
+		didPressRotateButton("btn_x2_pos")
+	}
+	document.getElementById( "btn_x2_neg" ).onclick = function () {
+		didPressRotateButton("btn_x2_neg")
+	}
+	document.getElementById( "btn_x3_pos" ).onclick = function () {
+		didPressRotateButton("btn_x3_pos")
+	}
+	document.getElementById( "btn_x3_neg" ).onclick = function () {
+		didPressRotateButton("btn_x3_neg")
+	}
+	
+	document.getElementById( "btn_h1_pos" ).onclick = function () {
+		didPressRotateButton("btn_h1_pos")
+	}
+	document.getElementById( "btn_h1_neg" ).onclick = function () {
+		didPressRotateButton("btn_h1_neg")
+	}
+	document.getElementById( "btn_h2_pos" ).onclick = function () {
+		didPressRotateButton("btn_h2_pos")
+	}
+	document.getElementById( "btn_h2_neg" ).onclick = function () {
+		didPressRotateButton("btn_h2_neg")
+	}
+	document.getElementById( "btn_h3_pos" ).onclick = function () {
+		didPressRotateButton("btn_h3_pos")
+	}
+	document.getElementById( "btn_h3_neg" ).onclick = function () {
+		didPressRotateButton("btn_h3_neg")
+	}
+	
+	document.getElementById( "btn_v1_pos" ).onclick = function () {
+		didPressRotateButton("btn_v1_pos")
+	}
+	document.getElementById( "btn_v1_neg" ).onclick = function () {
+		didPressRotateButton("btn_v1_neg")
+	}
+	document.getElementById( "btn_v2_pos" ).onclick = function () {
+		didPressRotateButton("btn_v2_pos")
+	}
+	document.getElementById( "btn_v2_neg" ).onclick = function () {
+		didPressRotateButton("btn_v2_neg")
+	}
+	document.getElementById( "btn_v3_pos" ).onclick = function () {
+		didPressRotateButton("btn_v3_pos")
+	}
+	document.getElementById( "btn_v3_neg" ).onclick = function () {
+		didPressRotateButton("btn_v3_neg")
+	}
 }

@@ -19,7 +19,7 @@ class _3DObject {
 		this.matModel = mat4();
 		this.material = {
 			ambient: vec3(0.9, 0.0, 0.0),
-			diffuse: vec3(0.6, 0.6, 0.6),
+			diffuse: vec3(0.65, 0.65, 0.65),
 			specular: vec3(0.6, 0.6, 0.6),
 			shininess: 100.0
 		}

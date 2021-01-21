@@ -69,7 +69,7 @@
 		vec3 L = normalize(o_Light);
 	
 		vec3 H = normalize(L + E);   
-		vec3 ambient = vec3(texture2D( texture, fTexCoord ) * texture2D( texture2, fTex2Coord ));
+		vec3 ambient = 0.9 * vec3(texture2D( texture, fTexCoord ) * texture2D( texture2, fTex2Coord ));
 	
 		float Kd = max(dot(L, N), 0.0);
 		vec3 diffuse = Kd * col_Diffuse * light_Diffuse;
