@@ -5,7 +5,7 @@
  * Position is a vec3(x, y, z) structure.
  * Model matrix is object transformation matrix, which initially is identity matrix. 
  * Child classes should override loadData method and implement specific vertex, index loading mechanism.
- * TODO: add texture
+ * Note: This class is taken from the OOP sample project provided by Farid R. Ahmadov and modified for this project. 
  */
 class _3DObject {
 	constructor(program, position = vec3(0, 0, 0)) {
@@ -26,7 +26,7 @@ class _3DObject {
 	}
 
 	loadData() {
-		// should be overridden
+		// override this
 	}
 
 	init() {

@@ -1,15 +1,14 @@
 
-var canvas;
-var gl;
-var program;
+var canvas, gl, program
 
-var camera;
-var light1;
-var light2;
+var camera
+var light1
+var light2
 
 var lastX
 var lastY
 
+var lightRotationEnabled = true
 var firstMouse = true
 var trackballEnabled = false
 var trackballLastX = 0
@@ -24,7 +23,6 @@ window.onload = function init()
 	
 	camera = new Camera(program, vec3(2, 1.7, 2), vec3(0, 0, 0), vec3(0, 1, 0))
 	light1 = new Light(program, vec4(2, 3, 1, 1), 1)
-	// light2 = new Light(program, vec4(-2.5, 3, -2.5, 1), 2)
 	light2 = new Light(program, vec4(2, 2, 2, 1), 2)
 	light2.intensity = {
 		ambient: vec3(0.3, 0.3, 0.3),
@@ -32,10 +30,11 @@ window.onload = function init()
 		specular: vec3(0.3, 0.3, 0.3)
 	}
 	
-	rubic = new Rubic(program)
-		
+	rubic = new Rubik(program)
+	
 	this.setUpButtons()
-		
+	
+	// EVENT LISTENERS
 	document.addEventListener("keydown", function(event)
 	{
 		// Prevent arrow keys from scrolling
@@ -60,11 +59,11 @@ window.onload = function init()
 		var y = 2*(canvas.height-event.clientY)/canvas.height-1;
 		enableTrackball(x, y);
 	});
-  
+	
 	canvas.addEventListener("mouseup", function(event){
 		var x = 2*event.clientX/canvas.width-1;
 		var y = 2*(canvas.height-event.clientY)/canvas.height-1;
-		disableTrackball(x, y);
+		disableTrackball();
 	});
 	
 	render()
@@ -79,11 +78,16 @@ function render()
 	light2.render()
 	rubic.render()
 	
-	light2.rotate(2)
+	if (lightRotationEnabled) light2.rotate(2)
 		
 	requestAnimFrame( render );
 }
 
+/**
+ * Enables the trackball mode
+ * @param {number} x 
+ * @param {number} y 
+ */
 function enableTrackball(x, y)
 {
 	trackballEnabled = true;
@@ -93,11 +97,19 @@ function enableTrackball(x, y)
 	console.log("tball enabled")
 }
 
-function disableTrackball(x, y)
+/**
+ * Disables the trackball mode
+ */
+function disableTrackball()
 {
 	trackballEnabled = false;
 }
 
+/**
+ * Performs trackball rotations based on the changes of the x and y values
+ * @param {number} x
+ * @param {number} y 
+ */
 function trackBallDidMove(x, y)
 {
 	if(!trackballEnabled)
@@ -107,7 +119,6 @@ function trackBallDidMove(x, y)
 	
 	var xDiff = x - trackballLastX
 	var yDiff = y - trackballLastY
-	// console.log(x - trackballLastX, y - trackballLastY)
 	
 	if (xDiff > 0)
 	{
@@ -133,13 +144,6 @@ function trackBallDidMove(x, y)
 
 function didPressKey(key)
 {
-	console.log("Key pressed: " + key)
-	
-	// cameraDirection = normalize(subtract(camera.target, camera.position))
-	
-	
-	// cameraRightDirection = normalize(cross(camera.up, cameraDirection))
-	
 	switch(key) {
 		case "w":
 			camera.moveForward()
@@ -162,16 +166,20 @@ function didPressKey(key)
 	  }
 }
 
+/**
+ * Performs camera rotations based on mouse coordinates
+ * @param {number} x
+ * @param {number} y 
+ */
 function mouseDidMove(x, y)
 {
-	// console.log([x, y])
-	return
+	// return // disables this function for debugging
 	
 	if (trackballEnabled)
 	{
 		return
 	}
-	console.log("cam moves ")
+	
 	if (firstMouse)
     {
         lastX = x;
@@ -274,20 +282,21 @@ function initWebGL()
 	gl.clearColor( 0.1, 0.1, 0.1, 1.0 );
 
 	gl.enable(gl.DEPTH_TEST);
-	// canvas.style.cursor = 'none';
 	
-	
-	//
-	//  Load shaders and initialize attribute buffers
-	//
 	program = initShaders( gl, "vertex-shader", "fragment-shader" );
 	gl.useProgram( program );
 }
 
+/**
+ * Sets onclick events of buttons
+ */
 function setUpButtons()
 {
 	document.getElementById( "switch" ).onclick = function () {
 		rubic.randomRotationsEnabled = !rubic.randomRotationsEnabled
+	}
+	document.getElementById( "light_switch" ).onclick = function () {
+		lightRotationEnabled = !lightRotationEnabled
 	}
 	
 	document.getElementById( "btn_x1_pos" ).onclick = function () {

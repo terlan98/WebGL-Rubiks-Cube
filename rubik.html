@@ -105,10 +105,11 @@
 <script type="text/javascript" src="Camera.js"></script>
 <script type="text/javascript" src="Light.js"></script>
 <script type="text/javascript" src="Cube.js"></script>
-<script type="text/javascript" src="Rubic.js"></script>
+<script type="text/javascript" src="Rubik.js"></script>
 <script type="text/javascript" src="main.js"></script>
 
 <body>
+<h1>Rubik's Cube <i> by Tarlan Ismayilsoy</i></h1>
 <canvas id="gl-canvas" width="512"" height="512" style = "float: left">
 Oops ... your browser doesn't support the HTML5 canvas element
 </canvas>
@@ -122,11 +123,17 @@ Oops ... your browser doesn't support the HTML5 canvas element
 	  <th colspan="3">
 		<!-- Rounded switch -->
 		<label class="switch">
-		  <input type="checkbox" id="switch">
+		  <input type="checkbox" id="switch" checked>
 		  <span class="slider round"></span>
 		</label>
-		<br>
-		Infinite Random Animation Toggle
+		<div> Infinite Random Animation Toggle</div>
+		</br>
+		
+		<label class="switch">
+			<input type="checkbox" id="light_switch" checked>
+			<span class="slider round"></span>
+		</label>
+		<div> Rotating Light Toggle</div>
 	  </th>
 	</tr>
 	<tr>
@@ -170,6 +177,17 @@ Oops ... your browser doesn't support the HTML5 canvas element
 	  </td>
 	</tr>
 </table>
+
+<div style="display: inline-block;">
+	</br>
+	<u>Control keys:</u>
+	<ul>
+		<li><b>W</b> (forward) <b>A</b> (left), <b>S</b> (back) <b>D</b> (right), 
+		<b>Up Arrow Key</b> (up), <b>Down Arrow Key</b> (down) </li>
+		<li>Mouse to rotate the camera </li>
+		<li>Clicked mouse to activate trackball mode</li>
+	</ul>
+</div>
 
 </body>
 </html>

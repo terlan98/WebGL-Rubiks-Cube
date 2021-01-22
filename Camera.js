@@ -1,4 +1,9 @@
-class Camera {	
+/**
+ * Represents a camera.
+ * Contains functions for movement and rotation.
+ * Note: This class is taken from the OOP sample project provided by Farid R. Ahmadov and modified for this project. 
+ */
+class Camera {
     SENSITIVITY = 0.3
     SPEED = 0.08
     TRACKBALL_SPEED = 2
@@ -31,6 +36,11 @@ class Camera {
 		gl.uniformMatrix4fv(proj, false, flatten(matProj));
     }
     
+    /**
+     * Rotates the camera based on the offsets of mouse coordinates
+     * @param {number} xOffset 
+     * @param {number} yOffset 
+     */
     rotate(xOffset, yOffset)
     {
 	    xOffset *= this.SENSITIVITY;
@@ -50,13 +60,18 @@ class Camera {
         this.target = add(this.position, normalize(direction))
     }
 
+    /**
+     * Rotates the camera around the given axis by the specified angle value
+     * @param {number} angle 
+     * @param {vec3} vector3 
+     */
 	rotateAround(angle, vector3) 
 	{
         this.position = vec3(mult_v(rotate(angle, vector3), vec4(this.position)));
 	}
 	
 	/**
-	 * 
+	 * Translates the camera by the x, y, and z values given as a vec3.
 	 * @param {vec3} dVector – vec3, indicating the dx, dy, and dz
 	 */
 	translateBy(x, y, z) 
@@ -64,6 +79,9 @@ class Camera {
 		this.position = vec3(mult_v(translate(x, y, z), vec4(this.position)));
     }
     
+    /**
+     * Resets the position and target of the camera.
+     */
     reset()
     {
         this.position = this.initPosition
@@ -151,7 +169,6 @@ class Camera {
     }
 }
 
-//TODO: Make a new common js file for such functions, which may be needed by more classes
 function mult_v(m, v) {
     if (!m.matrix) {
         return "trying to multiply by non matrix";

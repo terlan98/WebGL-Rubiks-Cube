@@ -1,3 +1,7 @@
+/**
+ * Represents a cube. Contains texture.
+ * Note: This class is taken from the OOP sample project provided by Farid R. Ahmadov and modified for this project. 
+ */
 class Cube extends _3DObject {
 	constructor(program, id, position, size = 1) {
 		super(program, position);
@@ -82,6 +86,7 @@ class Cube extends _3DObject {
 	{
 		super.init()
 		
+		// Set up the 1st texture
 		this.tBuffer = gl.createBuffer();
 		gl.bindBuffer( gl.ARRAY_BUFFER, this.tBuffer );
 		gl.bufferData( gl.ARRAY_BUFFER, flatten(this.texCoordsArray), gl.STATIC_DRAW );
@@ -89,6 +94,7 @@ class Cube extends _3DObject {
 		var image = document.getElementById("texImage");
 		this.configureTexture( image, this.texture, "texture", 0 );
 		
+		// Set up the 2nd texture
 		this.tBuffer2 = gl.createBuffer();
 		gl.bindBuffer( gl.ARRAY_BUFFER, this.tBuffer2 );
 		gl.bufferData( gl.ARRAY_BUFFER, flatten(this.texCoords2Array), gl.STATIC_DRAW );
@@ -157,7 +163,7 @@ class Cube extends _3DObject {
 		{
 			tex2Coord = this.tex2Coord
 		}
-		else // don't show ada logo
+		else // don't show ada logo on the others
 		{
 			tex2Coord = this.tex2HiddenCoord
 		}
@@ -202,6 +208,13 @@ class Cube extends _3DObject {
 		this.quad( 5, 4, 0, 1, 6 );
 	}
 	
+	/**
+	 * Binds, configures, and activates the given texture
+	 * @param {HTMLImageElement} image
+	 * @param {*} textureVar variable that should contain the texture
+	 * @param {string} textureName name of the texture in shader
+	 * @param {number} id unique identifier for the texture
+	 */
 	configureTexture( image, textureVar, textureName, id ) {
 		textureVar = gl.createTexture();
 		

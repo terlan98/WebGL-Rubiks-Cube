@@ -1,3 +1,7 @@
+/**
+ * Represents a light source.
+ * Note: This class is taken from the OOP sample project provided by Farid R. Ahmadov and modified for this project. 
+ */
 class Light {
     constructor(program, position, id) {
         this.program = program;
