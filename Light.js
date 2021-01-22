@@ -1,5 +1,5 @@
 class Light {
-    constructor(program, position) {
+    constructor(program, position, id) {
         this.program = program;
         this.position = position;
         this.intensity = {
@@ -7,20 +7,21 @@ class Light {
             diffuse: vec3(1.0, 1.0, 1.0),
             specular: vec3(1.0, 1.0, 1.0)
         }
+        this.id = id
     }
 
     render() {
-        var pos = gl.getUniformLocation(this.program, "v_Light");
+        var pos = gl.getUniformLocation(this.program, "v_Light" + this.id);
         gl.uniform4fv(pos, flatten(this.position));
 
         // sending light properties
-        var ambient = gl.getUniformLocation(this.program, "light_Ambient");
+        var ambient = gl.getUniformLocation(this.program, "light_Ambient" + this.id);
         gl.uniform3fv(ambient, flatten(this.intensity.ambient));
 
-        var diffuse = gl.getUniformLocation(this.program, "light_Diffuse");
+        var diffuse = gl.getUniformLocation(this.program, "light_Diffuse" + this.id);
         gl.uniform3fv(diffuse, flatten(this.intensity.diffuse));
 
-        var specular = gl.getUniformLocation(this.program, "light_Specular");
+        var specular = gl.getUniformLocation(this.program, "light_Specular" + this.id);
         gl.uniform3fv(specular, flatten(this.intensity.specular));
     }
 

@@ -4,7 +4,8 @@ var gl;
 var program;
 
 var camera;
-var light;
+var light1;
+var light2;
 
 var lastX
 var lastY
@@ -21,15 +22,18 @@ window.onload = function init()
 	lastX = canvas.width / 2
 	lastY = canvas.height / 2
 	
-	//original cam position: vec3(4, 3.5, 4)
-	// camera = new Camera(program, vec3(0, 0, 6), vec3(0, 0, 0), vec3(0, 1, 0))
 	camera = new Camera(program, vec3(2, 1.7, 2), vec3(0, 0, 0), vec3(0, 1, 0))
-    light = new Light(program, vec4(2, 3, 1, 1))
+	light1 = new Light(program, vec4(2, 3, 1, 1), 1)
+	// light2 = new Light(program, vec4(-2.5, 3, -2.5, 1), 2)
+	light2 = new Light(program, vec4(2, 2, 2, 1), 2)
+	light2.intensity = {
+		ambient: vec3(0.3, 0.3, 0.3),
+		diffuse: vec3(0.3, 0.3, 0.3),
+		specular: vec3(0.3, 0.3, 0.3)
+	}
 	
 	rubic = new Rubic(program)
-	
-	// camera.translateBy(-2, -1.8, -2)
-	
+		
 	this.setUpButtons()
 		
 	document.addEventListener("keydown", function(event)
@@ -71,10 +75,11 @@ function render()
 	gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	
 	camera.render()
-	light.render()
+	light1.render()
+	light2.render()
 	rubic.render()
 	
-	// light.rotate(1)
+	light2.rotate(2)
 		
 	requestAnimFrame( render );
 }
