@@ -163,6 +163,9 @@ function didPressKey(key)
 		case "ArrowDown":
 			camera.moveDown()
 			break
+		case "r":
+			this.camera.reset()
+			break
 	  }
 }
 
