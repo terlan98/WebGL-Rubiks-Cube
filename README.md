@@ -1,6 +1,7 @@
 # WebGL Rubik's Cube
 Simulation of a Rubik's cube made with JS and WebGL. 
 ![Cube](https://i.imgur.com/tgzkYlM.png =350x350)
+<img src="https://i.imgur.com/tgzkYlM.png" width="350" height="350" />
 
 ## ⚡️ How can I run it?
 Open **rubik.html** in a web browser
